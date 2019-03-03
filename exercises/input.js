@@ -4,34 +4,49 @@ class Input{
 	//constructor takes in a a target input element
 	//should also construct variables for the range, the pattern, and the element that will hold the error message
 	//range min and max should default to null
-	constructor( ){
-
+	constructor( input ){
+		this.input = input;
+		this.pattern = null;
+		this.error = 'ERROR';
+		this.range = {
+			min: null,
+			max: null	
+		};
+		this.object = {};
 	}
 	//setRange sets the minimum and maximum range, if necessary, for the input
 	//arguments : min (a number), and max (a number)
 	//returns: nothing
 	//purpose: sets the min and max values for the object
-	setRange(  ){
-
+	setRange( min, max ){
+		this.range.min = min;
+		this.range.max = max;
+		return;
 	}
 	//getRange gets the minimum and maximum range.
 	//arguments: nothing
 	//returns: an object with a property of min, and a property of max, containing the minimum and maximum numbers
 	getRange(){
-		
+		var min = this.range.min;
+		var max = this.range.max;
+		var currentRange = {};	
+		currentRange.min = min;
+		currentRange.max = max;
+		return currentRange;
 	}
 	//setPattern saves a regex pattern into the object
 	//arguments: pattern (a regular expression.  if you don't know what it is, you will learn it soon)
 	//returns: nothing
 	//saves the given pattern into the object
-	setPattern(  ){
-		
+	setPattern( pattern ){
+		this.range.pattern = pattern;
+		return;
 	}
 	//getPattern returns the currently stored pattern of the input object
 	//arguments: nothing
 	//returns: the currently stored regex pattern
 	getPattern(){
-		
+		return this.range.pattern;
 	}
 	//test runs all current tests on the target input and returns an object with data about whether the input passed or not
 	//arguments: nothing
@@ -50,7 +65,29 @@ class Input{
 		if it is still null, no range has been set, so don't test it
 			if it is not null, then test the range */
 	test(){
+		var testVar = this.input.val();
+		var regex = new RegExp(this.range.pattern);
+		var regexTest = regex.test(testVar);
 
+		if(this.range.min && this.range.max){
+			if(testVar > this.range.min && testVar < this.range.max){
+				var rangeTest = true;
+			}else{
+				var rangeTest = false;
+			}
+		}
+
+		if(!regexTest){
+			this.object.result = regexTest;
+			this.object.error = 'pattern';
+		}else if(rangeTest === false){
+			this.object.result = rangeTest;
+			this.object.error = 'range';
+		}else{
+			this.object.result = regexTest;
+		}
+
+		return this.object;
 	}
 	/*
 	showError: takes in a message, creates a dom element, and then positions that dom Element directly below the input
@@ -69,8 +106,21 @@ class Input{
 		MAKE SURE TO STORE the reference to the dom element in the object for later use!
 		Don't store the CSS selector, you made the element, store the direct dom object itself!
 		*/
-	showError(  ){
+	showError( message ){
+		var position = $(this.input).position();
+		var height = $(this.input).height();
+		var parent = $(this.input).parent();
+		var newElement = $('<div>');
+		newElement = newElement.css({
+			left: position.left,
+			top: position.top + height,
+			height: height,
+		})
+		newElement.addClass('inputError');
+		newElement.text(message);
 
+		$(parent).append(newElement);
+		this.object.newElement = newElement;
 	}
 	/*
 	hideError removes the error dom element from the DOM for the given input
@@ -80,6 +130,6 @@ class Input{
 		removes the dom element in question (https://www.w3schools.com/jquery/html_remove.asp)
 		*/
 	hideError(){
-		
+		this.object.newElement.remove();
 	}
 }

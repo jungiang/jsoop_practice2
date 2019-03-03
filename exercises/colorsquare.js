@@ -14,7 +14,16 @@ class ColorSquare{
 		you'll need to bind the handleClick method to this object:
 			this.handleClick = this.handleClick.bind(this)
 	*/
-	constructor( ){
+	constructor( colors, index, elementClass ){
+		debugger;
+		this.colors = colors;
+		this.colorIndex = index;
+		this.element = $('<div>');
+		this.elementClass = elementClass;
+		this.neighborElement = null;
+		this.object = {};
+
+		this.handleClick = this.handleClick.bind(this);
 	}
 	/*setter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set
@@ -26,8 +35,13 @@ class ColorSquare{
 		make sure it only sets the neighbor if it is the right class constructor (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 		if it is the right constructor, set the neightbor
 	*/
-	set neighbor(){
-
+	set neighbor( neighborObject ){
+		if(this.neighborElement !== neighborObject.constructor){
+			this.neighborElement = neighborObject.constructor;
+			return true;
+		}else{
+			return false;
+		}	
 	}
 	/* getter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
@@ -37,7 +51,7 @@ class ColorSquare{
 		this object's property of the neighbor to the right
 	*/
 	get neighbor(){
-
+		// return get this.neighborElement;
 	}
 	/*
 	click handler for this dom element
@@ -54,7 +68,15 @@ class ColorSquare{
 			make sure the rightNeighbor is something!  the rightmost element won't have a neighbor
 		*/
 	handleClick(){
-
+		if(this.colorIndex < this.colors.length-1){
+			this.colorIndex++;
+		}else{
+			this.colorIndex = 0;
+		}
+		$(this.element).css('background-color', this.colors[this.colorIndex]);
+		if(!this.neighborElement){
+			$(this.neighborElement).this.handleClick();
+		}
 	}
 	/*
 	change the color of the current element
@@ -65,8 +87,8 @@ class ColorSquare{
 	notes:
 		changes the current object's dom element's backgound color to the argument color
 	*/
-	changeColor(  ){
-
+	changeColor( color ){
+		$(this.element).css('background-color', color);
 	}
 	/*
 	render / generate the dom element for the current object 
@@ -82,6 +104,11 @@ class ColorSquare{
 		return the dom element that was generated. 
 	*/
 	render(){
+		var newElement = $('<div>');
+		newElement.addClass(this.elementClass);
+		newElement.css('background-color', this.colorIndex);
 
+		$(newElement).on('click', this.handleClick);
+		return newElement;
 	}
 }
