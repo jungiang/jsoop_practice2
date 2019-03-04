@@ -15,13 +15,11 @@ class ColorSquare{
 			this.handleClick = this.handleClick.bind(this)
 	*/
 	constructor( colors, index, elementClass ){
-		debugger;
 		this.colors = colors;
 		this.colorIndex = index;
-		this.element = $('<div>');
 		this.elementClass = elementClass;
+		this.element = $(this);
 		this.neighborElement = null;
-		this.object = {};
 
 		this.handleClick = this.handleClick.bind(this);
 	}
@@ -36,12 +34,12 @@ class ColorSquare{
 		if it is the right constructor, set the neightbor
 	*/
 	set neighbor( neighborObject ){
-		if(this.neighborElement !== neighborObject.constructor){
-			this.neighborElement = neighborObject.constructor;
+		if(!this.neighborElement){
+			this.neighborElement = neighborObject;
 			return true;
 		}else{
 			return false;
-		}	
+		}		
 	}
 	/* getter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
@@ -51,7 +49,7 @@ class ColorSquare{
 		this object's property of the neighbor to the right
 	*/
 	get neighbor(){
-		// return get this.neighborElement;
+		return this.neighborElement;
 	}
 	/*
 	click handler for this dom element
@@ -68,14 +66,15 @@ class ColorSquare{
 			make sure the rightNeighbor is something!  the rightmost element won't have a neighbor
 		*/
 	handleClick(){
+		debugger;//stays red; am i moving along DOM elements? could be targeting issue
 		if(this.colorIndex < this.colors.length-1){
 			this.colorIndex++;
 		}else{
 			this.colorIndex = 0;
 		}
-		$(this.element).css('background-color', this.colors[this.colorIndex]);
-		if(!this.neighborElement){
-			$(this.neighborElement).this.handleClick();
+		this.changeColor(this.colors[this.colorIndex]);
+		if(this.neighborElement){
+			this.neighborElement.handleClick();
 		}
 	}
 	/*
@@ -88,7 +87,7 @@ class ColorSquare{
 		changes the current object's dom element's backgound color to the argument color
 	*/
 	changeColor( color ){
-		$(this.element).css('background-color', color);
+		$(this).css('background-color', color);
 	}
 	/*
 	render / generate the dom element for the current object 
@@ -106,9 +105,9 @@ class ColorSquare{
 	render(){
 		var newElement = $('<div>');
 		newElement.addClass(this.elementClass);
-		newElement.css('background-color', this.colorIndex);
+		newElement.css('background-color', this.colors[this.colorIndex]);
 
-		$(newElement).on('click', this.handleClick);
+		newElement.on('click', this.handleClick);
 		return newElement;
 	}
 }
