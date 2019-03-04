@@ -18,7 +18,7 @@ class ColorSquare{
 		this.colors = colors;
 		this.colorIndex = index;
 		this.elementClass = elementClass;
-		this.element = $(this);
+		this.element = null;
 		this.neighborElement = null;
 
 		this.handleClick = this.handleClick.bind(this);
@@ -87,7 +87,7 @@ class ColorSquare{
 		changes the current object's dom element's backgound color to the argument color
 	*/
 	changeColor( color ){
-		$(this).css('background-color', color);
+		$(this.element).css('background-color', color);
 	}
 	/*
 	render / generate the dom element for the current object 
@@ -103,11 +103,11 @@ class ColorSquare{
 		return the dom element that was generated. 
 	*/
 	render(){
-		var newElement = $('<div>');
-		newElement.addClass(this.elementClass);
-		newElement.css('background-color', this.colors[this.colorIndex]);
+		this.element = $('<div>');
+		this.element.addClass(this.elementClass);
+		this.element.css('background-color', this.colors[this.colorIndex]);
 
-		newElement.on('click', this.handleClick);
-		return newElement;
+		this.element.on('click', this.handleClick);
+		return this.element;
 	}
 }
